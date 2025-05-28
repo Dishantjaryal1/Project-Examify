@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_URL } from '../utils/api';
 
 const Exam = () => {
     const { id } = useParams();
@@ -48,8 +49,8 @@ const Exam = () => {
     
     // Function to handle tab visibility change
     const handleVisibilityChange = () => {
-        // Skip if already auto-submitting or if user is not a student
-        if (isAutoSubmitting.current || role !== 'student') return;
+        // Skip if already auto-submitting
+        if (isAutoSubmitting.current) return;
         
         if (document.hidden) {
             // User is leaving the tab
@@ -111,7 +112,7 @@ const Exam = () => {
     // Function to handle auto-submission
     const handleAutoSubmit = async () => {
         try {
-            // Clear any existing countdown interval
+            
             if (countdownInterval.current) {
                 clearInterval(countdownInterval.current);
             }
@@ -122,13 +123,13 @@ const Exam = () => {
             }
             
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:5000/api/exams/submit', 
+            await axios.post(`${API_URL}/exams/submit`, 
                 { 
                     examId: id, 
                     answers,
                     autoSubmitted: true,
-                    tabSwitches: tabSwitches,
-                    duration: Math.floor((Date.now() - examStartTime.current) / 1000) // Duration in seconds
+                    tabSwitches: 3, 
+                    duration: Math.floor((Date.now() - examStartTime.current) / 1000) 
                 }, 
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -148,9 +149,6 @@ const Exam = () => {
     
     // Function to handle copy-paste prevention
     const preventCopyPaste = (e) => {
-        // Skip if user is not a student
-        if (role !== 'student') return;
-        
         e.preventDefault();
         showToast('copyPaste', "Copy-paste is not allowed during the exam!");
         return false;
@@ -158,9 +156,6 @@ const Exam = () => {
     
     // Function to handle right-click prevention
     const preventRightClick = (e) => {
-        // Skip if user is not a student
-        if (role !== 'student') return;
-        
         e.preventDefault();
         showToast('rightClick', "Right-click is not allowed during the exam!");
         return false;
@@ -168,10 +163,10 @@ const Exam = () => {
     
     // Function to handle keyboard shortcuts
     const preventKeyboardShortcuts = (e) => {
-        // Skip if already auto-submitting or if user is not a student
-        if (isAutoSubmitting.current || role !== 'student') return;
+       
+        if (isAutoSubmitting.current) return;
         
-        // Prevent Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A
+       
         if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'a')) {
             e.preventDefault();
             showToast('keyboardShortcut', "Keyboard shortcuts are not allowed during the exam!");
@@ -187,7 +182,7 @@ const Exam = () => {
         document.addEventListener('contextmenu', preventRightClick);
         document.addEventListener('keydown', preventKeyboardShortcuts);
         
-        // Clean up event listeners
+
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             document.removeEventListener('copy', preventCopyPaste);
@@ -196,17 +191,17 @@ const Exam = () => {
             document.removeEventListener('contextmenu', preventRightClick);
             document.removeEventListener('keydown', preventKeyboardShortcuts);
             
-            // Clear any existing countdown interval
+
             if (countdownInterval.current) {
                 clearInterval(countdownInterval.current);
             }
             
-            // Remove the modal if it exists
+           
             if (modalDiv.current && modalDiv.current.parentNode) {
                 modalDiv.current.parentNode.removeChild(modalDiv.current);
             }
             
-            // Dismiss all toasts when component unmounts
+            
             Object.values(toastIds.current).forEach(id => {
                 if (id) toast.dismiss(id);
             });
@@ -217,7 +212,7 @@ const Exam = () => {
         const fetchExam = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:5000/api/exams/${id}`, {
+                const response = await axios.get(`${API_URL}/exams/${id}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
                 });
                 
@@ -249,7 +244,7 @@ const Exam = () => {
         
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:5000/api/exams/submit', 
+            await axios.post(`${API_URL}/exams/submit`, 
                 { 
                     examId: id, 
                     answers,
@@ -304,12 +299,10 @@ const Exam = () => {
     return (
         <div className='min-h-[55vh]'>
             <ToastContainer limit={1} />
-            {role === 'student' && (
-                <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
-                    <p className="font-bold">Exam Security Notice:</p>
-                    <p>Copy-paste, right-click, and tab switching are disabled. You have {3 - tabSwitches} tab switches remaining.</p>
-                </div>
-            )}
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
+                <p className="font-bold">Exam Security Notice:</p>
+                <p>Copy-paste, right-click, and tab switching are disabled. You have {3 - tabSwitches} tab switches remaining.</p>
+            </div>
             
             {exam && (
                 <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">

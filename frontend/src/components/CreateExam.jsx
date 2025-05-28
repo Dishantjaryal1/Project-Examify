@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../utils/api';
 
 const CreateExam = () => {
     const [title, setTitle] = useState('');
@@ -31,7 +31,7 @@ const CreateExam = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        await axios.post('http://localhost:5000/api/exams', { title, questions }, {
+        await axios.post(`${API_URL}/exams`, { title, questions }, {
             headers: { Authorization: `Bearer ${token}` }
         });
         window.location.href = '/dashboard';
@@ -75,7 +75,7 @@ const CreateExam = () => {
                     />
                 </div>
             ))}
-            <button type="button" onClick={addQuestion} className="bg-blue-600 text-white p-2 rounded mb-4">Add Question</button>
+            <button type="button" onClick={addQuestion} className="bg-blue-600 text-white p-2 mr-3 rounded mb-4">Add Question</button>
             <button type="submit" className="bg-blue-600 text-white p-2 rounded">Create Exam</button>
         </form>
     );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../utils/api';
 
 const Auth = () => {
     const [username, setUsername] = useState('');
@@ -17,7 +18,7 @@ const Auth = () => {
         const endpoint = isRegistering ? '/register' : '/login';
 
         try {
-            const response = await axios.post(`http://localhost:5000/api/auth${endpoint}`, { username, password, role });
+            const response = await axios.post(`${API_URL}/auth${endpoint}`, { username, password, role });
             
             if (isRegistering) {
                 setSuccessMessage('Registration successful! You can now log in.');

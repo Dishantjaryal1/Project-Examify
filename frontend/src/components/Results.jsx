@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Download, Award, CheckCircle, XCircle, FileText } from 'lucide-react';
+import { API_URL } from '../utils/api';
 
 const Results = () => {
     const [results, setResults] = useState([]);
@@ -18,7 +19,7 @@ const Results = () => {
                 const token = localStorage.getItem('token');
                 
                 // Fetch results
-                const resultsResponse = await axios.get('http://localhost:5000/api/results', {
+                const resultsResponse = await axios.get(`${API_URL}/results`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 
@@ -73,7 +74,7 @@ const Results = () => {
         setLoading(true);
         const token = localStorage.getItem('token');
         axios({
-            url: `http://localhost:5000/api/results/certificate/${resultId}`,
+            url: `${API_URL}/results/certificate/${resultId}`,
             method: 'GET',
             responseType: 'blob',
             headers: { Authorization: `Bearer ${token}` }

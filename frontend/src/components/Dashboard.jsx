@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Plus, Award } from 'lucide-react';
+import { API_URL } from '../utils/api';
 
 const Dashboard = () => {
     const [exams, setExams] = useState([]);
@@ -17,7 +18,7 @@ const Dashboard = () => {
             const token = localStorage.getItem('token');
             try {
                 setLoading(true);
-                const response = await axios.get('http://localhost:5000/api/exams', {
+                const response = await axios.get(`${API_URL}/exams`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setExams(response.data);

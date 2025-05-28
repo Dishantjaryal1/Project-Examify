@@ -9,13 +9,13 @@ const certificateRoutes = require('./routes/certificate');
 
 
 dotenv.config();
-connectDB();
+connectDB().then("Mongodb connected");
 
 const app = express();
 
 app.use(cors({
 
-    origin: 'http://localhost:5173', // Adjust this as per your frontend URL
+    origin: 'http://localhost:5173', 
 
 }));
 app.use(express.json());
