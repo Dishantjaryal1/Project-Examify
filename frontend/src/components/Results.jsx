@@ -213,7 +213,11 @@ const Results = () => {
                                                         <div className="text-sm text-gray-500">Questions: {totalQuestions}</div>
                                                         {result.autoSubmitted && (
                                                             <div className="text-sm text-red-500 mt-1">
-                                                                <span className="font-semibold">Auto-submitted</span> due to multiple tab switches ({result.tabSwitches} switches)
+                                                                <span className="font-semibold">Auto-submitted</span> 
+                                                                {result.tabSwitches >= 3 
+                                                                    ? ` due to multiple tab switches (${result.tabSwitches} switches)`
+                                                                    : ' due to time expiration'
+                                                                }
                                                             </div>
                                                         )}
                                                     </div>

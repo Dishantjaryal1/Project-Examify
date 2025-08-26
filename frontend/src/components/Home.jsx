@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 import { CheckCircle, Clock, Shield, ChevronRight, BookOpen, Users, BarChart } from "lucide-react";
+const role = localStorage.getItem('role');
 
 export default function Home() {
   const fadeIn = {
@@ -22,6 +23,14 @@ export default function Home() {
       }
     }
   };
+
+  const getStartedLink = role
+    ? role === "student"
+      ? "/student-dashboard"
+      : role === "examiner"
+      ? "/examiner-dashboard"
+      : "/dashboard" // fallback
+    : "/signup";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -57,7 +66,7 @@ export default function Home() {
 
             <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.a
-                href="/signup"
+                href={getStartedLink}
                 className="bg-blue-500 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-all shadow-md"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}

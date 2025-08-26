@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Award } from 'lucide-react';
+import { BookOpen, Plus, Award, Clock } from 'lucide-react';
 import { API_URL } from '../utils/api';
 
 const Dashboard = () => {
@@ -128,6 +128,11 @@ const Dashboard = () => {
                             <div className="flex items-center mb-4 text-indigo-600">
                                 <BookOpen size={16} className="mr-2" />
                                 <p className="text-gray-600">{exam.questions.length} Questions</p>
+                            </div>
+                            
+                            <div className="flex items-center mb-4 text-indigo-600">
+                                <Clock size={16} className="mr-2" />
+                                <p className="text-gray-600">{exam.timeLimit} minutes</p>
                             </div>
                             
                             <Link to={`/exam/${exam._id}`}>
